@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View, Text, TextInput, StyleSheet, TouchableOpacity, Alert,
 } from 'react-native';
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
 
 import Button from '../components/Button';
 
@@ -11,16 +11,28 @@ export default function LogInScreen(props) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  useEffect(() => {
+    const auth = getAuth();
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'MemoList'}],
+        });
+      }
+    });
+  });
+
   function handlePress() {
     const auth = getAuth();
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         const user = userCredential.user;
         console.log(user.uid);
-          navigation.reset({
-            index: 0,
-            routes: [{ name: 'MemoList' }],
-          });
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'MemoList'}],
+        });
       })
      .catch((error) => {
       Alert.alert(error.code);
