@@ -13,7 +13,7 @@ export default function LogInScreen(props) {
 
   useEffect(() => {
     const auth = getAuth();
-    onAuthStateChanged(auth, (user) => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         navigation.reset({
           index: 0,
@@ -21,7 +21,8 @@ export default function LogInScreen(props) {
         });
       }
     });
-  });
+    return unsubscribe;
+  }, []);
 
   function handlePress() {
     const auth = getAuth();
