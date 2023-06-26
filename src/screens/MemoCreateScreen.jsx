@@ -3,10 +3,26 @@ import {
   View, StyleSheet, TextInput, KeyboardAvoidingView,
 } from 'react-native';
 
+import { collection, addDoc } from 'firebase/firestore';
+
 import CircleButton from '../components/CircleButton';
 
 export default function MemoCreateScreen(props) {
   const { navigation } = props;
+
+  function handlePress() {
+    try {
+      const docRef = await addDoc(collection(db, "memos"), {
+        bodyText: 'Hello',
+      })
+        console.log('Created!', docRef.id);
+        navigation.goBack();
+     } catch (error) {
+      console.error("Error!", error);
+     }
+   }
+  }
+
   return (
     <KeyboardAvoidingView style={styles.container} behavior="height">
       <View style={styles.inputContainer}>
@@ -14,7 +30,7 @@ export default function MemoCreateScreen(props) {
       </View>
       <CircleButton
         name="check"
-        onPress={() => { navigation.goBack(); }}
+        onPress={handlePress}
       />
     </KeyboardAvoidingView>
   );
