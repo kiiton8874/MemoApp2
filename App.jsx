@@ -2,12 +2,12 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator, CardStyleInterpolators } from '@react-navigation/stack';
 
-import MemoListScreen from './src/screens/MemoListScreen';
-import MemoDetailScreen from './src/screens/MemoDetailScreen';
-import MemoEditScreen from './src/screens/MemoEditScreen';
-import MemoCreateScreen from './src/screens/MemoCreateScreen';
-import LogInScreen from './src/screens/LogInScreen';
-import SignUpScreen from './src/screens/SignUpScreen';
+import MemoListScreen from './screens/MemoListScreen';
+import MemoDetailScreen from './screens/MemoDetailScreen';
+import MemoEditScreen from './screens/MemoEditScreen';
+import MemoCreateScreen from './screens/MemoCreateScreen';
+import LogInScreen from './screens/LogInScreen';
+import SignUpScreen from './screens/SignUpScreen';
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 
