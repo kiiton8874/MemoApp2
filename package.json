@@ -12,6 +12,7 @@
     "@react-navigation/native": "^5.9.8",
     "@react-navigation/stack": "^5.14.9",
     "@use-expo/font": "^2.0.0",
+    "date-fns": "^2.30.0",
     "expo": "~48.0.18",
     "expo-status-bar": "~1.4.4",
     "firebase": "^9.22.2",

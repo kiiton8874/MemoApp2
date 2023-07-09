@@ -1,23 +1,48 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { shape, string } from 'prop-types';
 import {
   View, ScrollView, Text, StyleSheet,
 } from 'react-native';
 
+import { auth, db } from '../utils/firebase';
+import { dateToString } from '../utils/date';
+
 import CircleButton from '../components/CircleButton';
+import { onSnapshot, doc } from 'firebase/firestore';
 
 export default function MemoDetailScreen(props) {
-  const { navigation } = props;
+  const { navigation, route } = props;
+  const { id } = route.params;
+  // console.log(id);
+  const [memo, setMemo] = useState(null) 
+
+  useEffect(() => {
+    (async() => {
+      const currentUser = auth.currentUser
+      let unsub = () => {}
+      if (currentUser) {
+        unsub = onSnapshot(doc(db, 'users', currentUser.uid, 'memos', id), (doc) => {
+          const data = doc.data()
+          setMemo({
+            id: doc.id,
+            bodyText: data.bodyText,
+            updatedAt: data.updatedAt.toDate(),
+          })
+        });
+      }
+      return unsub
+      })()
+  }, []);
+
   return (
     <View style={styles.container}>
       <View style={styles.memoHeader}>
-        <Text style={styles.memoTitle}>買い物リスト</Text>
-        <Text style={styles.memoDate}>２０２３年６月３日１０：００</Text>
+        <Text style={styles.memoTitle} numberOfLines={1}>{memo && memo.bodyText}</Text>
+        <Text style={styles.memoDate}>{memo && dateToString(memo.updetedAt)}</Text>
       </View>
       <ScrollView style={styles.memoBody}>
         <Text style={styles.memoText}>
-          買い物リスト
-          書体やレイアウトなどを確認するために使います。
-          本文用なので使い方を間違えると不自然に見えることがありますので要注意。
+          {memo && memo.bodyText}
         </Text>
       </ScrollView>
       <CircleButton
@@ -28,6 +53,12 @@ export default function MemoDetailScreen(props) {
     </View>
   );
 }
+
+MemoDetailScreen.propTypes = {
+  route: shape({
+    params: shape({ id: string }),
+  }).isRequired,
+};
 
 const styles = StyleSheet.create({
   container: {
