@@ -1,24 +1,67 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
-  View, StyleSheet, TextInput, KeyboardAvoidingView,
+  View, StyleSheet, TextInput, KeyboardAvoidingView, Alert,
 } from 'react-native';
+import { shape, string } from 'prop-types';
+
+import { doc, getDoc, setDoc, onSnapshot } from "firebase/firestore";
 
 import CircleButton from '../components/CircleButton';
 
+import { auth, db } from '../utils/firebase'
+
 export default function MemoEditScreen(props) {
-  const { navigation } = props;
+  const { navigation, route } = props;
+  const { id, bodyText } = route.params;
+  const [body, setBody] = useState(bodyText);
+  
+  function handlePress() {
+
+    (async() => {
+      const currentUser = auth.currentUser
+      let unsub = () => {}
+      if (currentUser) {
+        try {
+
+          unsub = await setDoc(doc(db, 'users', currentUser.uid, 'memos', id ),{
+            bodyText: body,
+            updatedAt: new Date(),
+          }, {marge: true})
+
+          navigation.goBack();
+
+        } catch (error) {
+          Alert.alert(error.code);
+        }
+
+      }
+      return unsub
+    })()
+  }
+
   return (
     <KeyboardAvoidingView style={styles.container} behavior="height">
       <View style={styles.inputContainer}>
-        <TextInput value="買い物リスト" multiline style={styles.input} />
+        <TextInput 
+          value={body}
+          multiline
+          style={styles.input}
+          onChangeText={(text) => {setBody(text)}}
+        />
       </View>
       <CircleButton
         name="check"
-        onPress={() => { navigation.goBack(); }}
+        onPress={ handlePress }
       />
     </KeyboardAvoidingView>
   );
 }
+
+MemoEditScreen.propTypes = {
+  route: shape({
+    params: shape({ id: string, bodyText: string }),
+  }).isRequired,
+};
 
 const styles = StyleSheet.create({
   container: {

@@ -23,6 +23,7 @@ export default function MemoDetailScreen(props) {
       if (currentUser) {
         unsub = onSnapshot(doc(db, 'users', currentUser.uid, 'memos', id), (doc) => {
           const data = doc.data()
+          console.log(data.updatedAt.toDate())
           setMemo({
             id: doc.id,
             bodyText: data.bodyText,
@@ -38,7 +39,7 @@ export default function MemoDetailScreen(props) {
     <View style={styles.container}>
       <View style={styles.memoHeader}>
         <Text style={styles.memoTitle} numberOfLines={1}>{memo && memo.bodyText}</Text>
-        <Text style={styles.memoDate}>{memo && dateToString(memo.updetedAt)}</Text>
+        <Text style={styles.memoDate}>{memo && dateToString(memo.updatedAt)}</Text>
       </View>
       <ScrollView style={styles.memoBody}>
         <Text style={styles.memoText}>
@@ -48,7 +49,7 @@ export default function MemoDetailScreen(props) {
       <CircleButton
         style={{ top: 160, bottom: 'auto' }}
         name="edit"
-        onPress={() => { navigation.navigate('MemoEdit'); }}
+        onPress={() => { navigation.navigate('MemoEdit', { id: memo.id, bodyText: memo.bodyText }); }}
       />
     </View>
   );

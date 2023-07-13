@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, Button } from 'react-native';
+import { View, StyleSheet, Text } from 'react-native';
 
 import MemoList from '../components/MemoList';
 import CircleButton from '../components/CircleButton';
 import LogOutButton from '../components/LogOutButton';
+import Button from '../components/Button';
+import Loading from '../components/Loading';
 
 import { collection, query, orderBy, getDocs } from 'firebase/firestore';
 import { auth, db } from '../utils/firebase';
@@ -27,6 +29,7 @@ export default function MemoListScreen(props) {
       setLoading(true)
 
       if (auth.currentUser) {
+        setLoading(true);
         let userMemos = []
         const currentUser = auth.currentUser
         const ref = collection(db, 'users', currentUser.uid, 'memos');
@@ -44,9 +47,9 @@ export default function MemoListScreen(props) {
         });
         setMemos(userMemos)
       }
-      setLoading(false)
+      setLoading(false);
     })()
-  }, [isFocused])
+  }, [])
 
   if (MemoListScreen.length === 0 ) {
     return (
@@ -57,11 +60,28 @@ export default function MemoListScreen(props) {
           <Button
             style={emptyStyles.button}
             label="作成する"
-            onPress={ ()=> {navigation.navigate('MemoCreate')} }/>
+            onPress={ ()=> {navigation.navigate('MemoCreate')} }
+            />
         </View>
       </View>
     )
   }
+
+  if (memos.length === 0) {
+    return (
+      <View style={emptyStyles.containar}>
+        <View style={emptyStyles.inner}>
+          <Text style={emptyStyles.title}>最初のメモを作成しよう！</Text>
+          <Button
+            style={emptyStyles.button}
+            label="作成する"
+            onPress={() => { navigation.navigate('MemoCreate'); }}
+          />
+        </View>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
       <MemoList memos={memos}/>

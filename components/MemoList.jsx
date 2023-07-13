@@ -6,7 +6,7 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import { shape, string, instanceOf, arrayOf } from 'prop-types';
 
-import { deteToString } from '../utils/date';
+import { dateToString } from '../utils/date';
 
 export default function MemoList(props) {
   const { memos } = props;
@@ -20,7 +20,7 @@ export default function MemoList(props) {
       >
       <View>
         <Text style={styles.memoListItemTitle} numberOfLines={1}>{item.bodyText}</Text>
-        <Text style={styles.memoListItemDate}>{deteToString(item.updatedAt)}</Text>
+        <Text style={styles.memoListItemDate}>{dateToString(item.updatedAt)}</Text>
       </View>
       <TouchableOpacity
         style={styles.memoDelete}
