@@ -5,6 +5,7 @@ import {
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 
 import Button from '../components/Button';
+import { translateErrors } from '../utils';
 
 export default function SignUpScreen(props) {
   const { navigation } = props;
@@ -24,7 +25,8 @@ export default function SignUpScreen(props) {
       })
       .catch((error) => {
         console.log(error.code, error.messege);
-        Alert.alert(error.code);
+        const errorMsg = translateErrors(error.code);
+        Alert.alert(errorMsg.title, errorMsg.description);
       });
   }
 
